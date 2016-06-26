@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>钟表</title>
+</head>
+<style>
+body{
+  background: #989898;
+}
+#canvas{
+  /*border:1px solid pink;*/
+  position: absolute;
+  margin:auto;
+  left:0;
+  right:0;
+  top:0;
+  bottom:0;
+}
+</style>
+<body>
+  <canvas id="canvas" width="600" height="600"></canvas>
+  <script>
+    var carvas = document.querySelector('#canvas'); //dom元素
+    var ctx = canvas.getContext('2d'); //得到一个画笔
+    console.dir(ctx);
+    var r = function(deg){
+      return (Math.PI/180)*deg;
+    }
+    var drawClock = function(){
+      ctx.clearRect(0,0,600,600);
+      ctx.save();
+      ctx.translate(300,300);
+      //画表盘
+
+      ctx.save();
+        ctx.beginPath();
+        ctx.arc(0,0,200,0,r(360));
+        ctx.fillStyle = "#fff";
+        ctx.shadowOffsetY = 12;
+        ctx.shadowBlur = 30;
+        ctx.shadowColor = "rgba(0, 0, 0, 0.5)";
+        ctx.fill();
+        ctx.save();
+        ctx.strokeStyle = "#404040";
+        ctx.stroke();
+        ctx.restore();
+        ctx.closePath();
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(0,0,120,0,r(360));
+        var jianbian = ctx.createLinearGradient(0,-150,0,150);
+          jianbian.addColorStop(0.1,'#eeeeee');
+          jianbian.addColorStop(1,'#e7e3e3');
+          ctx.fillStyle = jianbian;
+          ctx.fillRect(0,0,120,0);
+        ctx.shadowOffsetY = 12;
+        ctx.shadowBlur = 30;
+        ctx.shadowColor = "rgba(0, 0, 0, 0.5)";
+        ctx.fill();
+        ctx.closePath();
+        ctx.restore();
+      ctx.restore();
+      //画刻度线
+      ctx.save();
+      ctx.beginPath();
+      for(var i=0;i<60;i++){
+        ctx.moveTo(0,-180);
+        if(i%15 === 0){
+          ctx.lineTo(0,-160);
+          // ctx.strokeText('12',0,200);
+        }
+        // ctx.lineTo(0,-190);
+        ctx.rotate(r(90));
+      }
+      ctx.stroke();
+      ctx.closePath();
+      ctx.restore();
+
+      //画指针
+      var now = new Date();
+      var second = now.getSeconds();
+   	  var minutes = now.getMinutes();
+      var hours = now.getHours();
+    	var ss = now.getMilliseconds();
+
+      ctx.save();
+      ctx.rotate((Math.PI/180)*360*(second*1000+ss)/60000);
+      ctx.beginPath();
+      // ctx.moveTo(0,35);
+      // ctx.lineTo(0,15);
+        ctx.save();
+
+        ctx.beginPath();
+        ctx.moveTo(15,0);
+        ctx.arc(0,0,15,0,r(360));
+        ctx.fillStyle="#fff";
+        ctx.shadowOffsetY = 3;
+        ctx.shadowOffsetX = -3;
+        ctx.shadowBlur = 13;
+        ctx.shadowColor = "rgba(0, 0, 0, 0.3)";
+        ctx.fill();
+        ctx.save();
+        ctx.beginPath();
+        ctx.strokeStyle="#fff";
+        ctx.stroke();
+        ctx.closePath();
+        ctx.restore();
+
+        ctx.closePath();
+        ctx.save();
+        // ctx.beginPath();
+        var radgrad = ctx.createRadialGradient(0,0,10,10,0,0);
+        // radgrad.addColorStop(1, '#676767');
+        radgrad.addColorStop(0.9, '#878181');
+        radgrad.addColorStop(0.1, '#ADADAD');
+        ctx.fillStyle = radgrad;
+        // ctx.fillRect(0,0,10,10);
+        ctx.arc(0,0,11,0,r(360));
+        ctx.fill();
+        // var img=new Image();
+        // img.src='dian.png';
+        // img.onload=function(){
+        //   var ptrn=ctx.createPattern(img,'no-repeat');
+        //   ctx.fillStyle=ptrn;
+        //   ctx.fillRect(200,200,11,11);
+        // }
+        // ctx.closePath();
+        ctx.restore();
+        ctx.restore();
+      ctx.moveTo(0,-15);
+      ctx.lineTo(0,-130);
+      ctx.lineWidth = 4;
+      ctx.lineCap = 2;
+      ctx.strokeStyle = "#363636";
+      ctx.stroke();
+      ctx.closePath();
+      ctx.restore();
+
+
+      ctx.save();
+      var deg = ((Math.PI/180)*360*(hours*3600+minutes*60+second)/43200);
+      ctx.rotate(deg);
+      ctx.beginPath();
+      // ctx.moveTo(0,35);
+      // ctx.lineTo(0,15);
+      ctx.moveTo(15,0);
+      ctx.moveTo(0,-15);
+      ctx.lineTo(0,-75);
+      ctx.lineWidth = 4;
+      ctx.lineCap = 2;
+      ctx.strokeStyle = "#363636";
+      ctx.stroke();
+      ctx.closePath();
+      ctx.restore();
+
+      ctx.save();
+      ctx.rotate((Math.PI/180)*360*(minutes*60+second)/3600);
+      ctx.beginPath();
+      ctx.moveTo(0,35);
+      // ctx.lineTo(0,15);
+      // ctx.moveTo(15,0);
+      ctx.moveTo(0,-15);
+      ctx.lineTo(0,-105);
+      ctx.lineWidth = 5;
+      ctx.strokeStyle = "#D85339";
+      ctx.stroke();
+      ctx.closePath();
+      ctx.restore();
+      ctx.restore();
+
+    }
+    drawClock();
+    setInterval(drawClock,12);
+  </script>
+</body>
+</html>
